@@ -18,7 +18,7 @@ https://atom.io
 ### Crawdad: C/C++ Programming Tutorial
 
 Dr. Crawford's tutorial website. In additional the the HF tutorial that we covered it 
-contains tutorial for adding DIIS to HF all the way up to EOM-CCSD.
+contains tutorials for adding DIIS to HF all the way up to EOM-CCSD.
  
 The website can be found [here](http://sirius.chem.vt.edu/wiki/doku.php?id=crawdad:programming)
 
