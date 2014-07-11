@@ -67,9 +67,8 @@ int main(int argc, char *argv[]) {
     printf("\tNuclear repulsion energy = %20.10lf\n", enuc);
 
     /* Have the user input some key data */
-    
     int do_blas;
-    printf("\n 1 for BLAS 0 for plain: ");
+    printf("\n1 for BLAS 0 for plain: ");
     scanf("%d", &do_blas);
     
     int nao;
@@ -94,15 +93,16 @@ int main(int argc, char *argv[]) {
     /* Core Hamiltonian */
     
  
- if(do_blas){
- C_DAXPY(nao*nao, 1, V[0], 1,H[0], 1);
- }
-    
-  else{
-    for (int i = 0; i < nao; i++)
-      for (int j = 0; j < nao; j++)
-        H[i][j] +=  V[i][j];
- }
+     if(do_blas){
+       C_DAXPY(nao*nao, 1, V[0], 1,H[0], 1);
+     }
+        
+     else{
+       for (int i = 0; i < nao; i++)
+         for (int j = 0; j < nao; j++)
+           H[i][j] +=  V[i][j];
+     }
+
     printf("\n\tCore Hamiltonian:\n");
     print_mat(H, nao, nao, stdout);
 
@@ -115,44 +115,38 @@ int main(int argc, char *argv[]) {
     /* build the symmetric orthogonalizer X = S^(-1/2) */
     evals = init_array(nao);
     
-   if(do_blas){
-		evecs  = read_1e_ints("s.dat", nao);    
-		double** work=init_matrix(nao,nao);
-		C_DSYEV( 'V', 'U', nao, *evecs, nao, evals, *work, nao*nao);    
-		delete[] work;
-			}
+    if(do_blas){
+      evecs  = read_1e_ints("s.dat", nao);    
+      double** work=init_matrix(nao,nao);
+      C_DSYEV('V', 'U', nao, *evecs, nao, evals, *work, nao*nao);    
+      delete[] work;
+    }
+
     else{ 
-    
-    evecs = init_matrix(nao, nao);
-	diag(nao, nao, S, evals, 1, evecs, 1e-13);
-        }
-    
-    
-TMP = init_matrix(nao, nao);
- 
-   for (int i = 0; i < nao; i++) {
+     evecs = init_matrix(nao, nao);
+     diag(nao, nao, S, evals, 1, evecs, 1e-13);
+    }
+     
+    TMP = init_matrix(nao, nao);
+     
+    for (int i = 0; i < nao; i++) {
       for (int j = 0; j < nao; j++) {
         S[i][j] = 0.0;
       }
       S[i][i] = 1.0 / sqrt(evals[i]);
- }     
-
-    
+    }     
     
     X = init_matrix(nao, nao);
     
     if(do_blas){
-    
     //Remember that evecs needs to be transposed here since it is stored column major
-    
-    C_DGEMM('t','n',nao,nao,nao,1, *evecs,nao,*S,nao,1,*TMP,nao);
-    C_DGEMM('n','n',nao,nao,nao,1, *TMP,nao,*evecs,nao,1,*X,nao);
+      C_DGEMM('t','n',nao,nao,nao,1, *evecs,nao,*S,nao,1,*TMP,nao);
+      C_DGEMM('n','n',nao,nao,nao,1, *TMP,nao,*evecs,nao,1,*X,nao);
     }
     
-    
     else{
-    mmult(evecs, 0, S, 0, TMP, nao, nao, nao);
-    mmult(TMP, 0, evecs, 1, X, nao, nao, nao);
+      mmult(evecs, 0, S, 0, TMP, nao, nao, nao);
+      mmult(TMP, 0, evecs, 1, X, nao, nao, nao);
     }
     
     delete_matrix(TMP);
@@ -171,72 +165,64 @@ TMP = init_matrix(nao, nao);
       for (int j = 0; j < nao; j++)
         F[i][j] = H[i][j]; /* core Hamiltonian guess */
 
-    
-    
     TMP = init_matrix(nao, nao);
     Fp = init_matrix(nao, nao);
     
-    
     if(do_blas){
-    C_DGEMM('n','n',nao,nao,nao,1, *X,nao,*F,nao,1,*TMP,nao);
-    C_DGEMM('n','n',nao,nao,nao,1, *TMP,nao,*X,nao,1,*Fp,nao);
+      C_DGEMM('n','n',nao,nao,nao,1, *X,nao,*F,nao,1,*TMP,nao);
+      C_DGEMM('n','n',nao,nao,nao,1, *TMP,nao,*X,nao,1,*Fp,nao);
 	}
     
     else{
-    mmult(X, 0, F, 0, TMP, nao, nao, nao);
-    mmult(TMP, 0, X, 0, Fp, nao, nao, nao);
+      mmult(X, 0, F, 0, TMP, nao, nao, nao);
+      mmult(TMP, 0, X, 0, Fp, nao, nao, nao);
     }
     
     printf("\n\tInitial F' Matrix:\n");
     print_mat(Fp, nao, nao, stdout);
 
-	
-
     eps = init_array(nao);
     if(do_blas){
-	
-	for(int i=0;i<nao;i++){
-	for(int j=0;j<nao;j++){
-	TMP[i][j]=Fp[i][j];
-	}
-	}
-	
-	double** work=init_matrix(nao,nao);
-	C_DSYEV( 'V', 'U', nao, *TMP, nao, eps, *work, nao*nao);    
-	delete[] work;
+      for(int i=0; i<nao; i++){
+        for(int j=0; j<nao; j++){
+          TMP[i][j] = Fp[i][j];
+        }
+      }
+	  
+	  double** work=init_matrix(nao,nao);
+	  C_DSYEV('V', 'U', nao, *TMP, nao, eps, *work, nao*nao);    
+	  delete[] work;
 	}
 	
 	else{
-    diag(nao, nao, Fp, eps, 1, TMP, 1e-13);
+      diag(nao, nao, Fp, eps, 1, TMP, 1e-13);
     }
     
     C = init_matrix(nao, nao);
     
     if(do_blas){
-    C_DGEMM('n','t',nao,nao,nao,1, *X,nao,*TMP,nao,1,*C,nao);
+      C_DGEMM('n','t',nao,nao,nao,1, *X,nao,*TMP,nao,1,*C,nao);
     }
     else{
-    mmult(X, 0, TMP, 0, C, nao, nao, nao);
+     mmult(X, 0, TMP, 0, C, nao, nao, nao);
     }
     
     printf("\n\tInitial C Matrix:\n");
     print_mat(C, nao, nao, stdout);
 
-D = init_matrix(nao, nao);
-if(do_blas){
-
-//now do the contraction to form the density matrix
-C_DGEMM('n','t',nao,nao,ndocc,1, *C,nao,*C,nao,1,*D,nao);
-}
-
-
-else{ //no blas
-
-    for (int i = 0; i < nao; i++)
-      for (int j = 0; j < nao; j++)
-        for (int k = 0; k < ndocc; k++)
-          D[i][j] += C[i][k] * C[j][k];
-}   
+    D = init_matrix(nao, nao);
+    if(do_blas){
+      // now do the contraction to form the density matrix
+      C_DGEMM('n','t',nao,nao,ndocc,1, *C,nao,*C,nao,1,*D,nao);
+    }
+    
+    
+    else{ //no blas
+      for (int i = 0; i < nao; i++)
+        for (int j = 0; j < nao; j++)
+          for (int k = 0; k < ndocc; k++)
+            D[i][j] += C[i][k] * C[j][k];
+    }   
     printf("\n\tInitial Density Matrix:\n");
     print_mat(D, nao, nao, stdout);
 
@@ -295,69 +281,67 @@ else{ //no blas
         print_mat(F, nao, nao, stdout);
       }
 
+      /* Build new guess */
       zero_matrix(TMP, nao, nao);
       if(do_blas){
-      
-      C_DGEMM('n','n',nao,nao,nao,1, *X,nao,*F,nao,1,*TMP,nao);
-				}
+        C_DGEMM('n', 'n', nao, nao, nao, 1, *X, nao, *F, nao, 1, *TMP, nao);
+      }
       
       else{
-      mmult(X, 0, F, 0, TMP, nao, nao, nao);
+        mmult(X, 0, F, 0, TMP, nao, nao, nao);
       }
       zero_matrix(Fp, nao, nao);
       
-       if(do_blas){
-      
-      C_DGEMM('n','n',nao,nao,nao,1, *TMP,nao,*X,nao,1,*Fp,nao);
-				}
-      
+      if(do_blas){
+        C_DGEMM('n', 'n', nao, nao, nao, 1,  *TMP, nao, *X, nao, 1, *Fp, nao);
+      }
       else{
-      
-      mmult(TMP, 0, X, 0, Fp, nao, nao, nao);
-			}
+        mmult(TMP, 0, X, 0, Fp, nao, nao, nao);
+      }
       
       zero_matrix(TMP, nao, nao);
       zero_array(eps, nao);
       
       if(do_blas){
-		double** work=init_matrix(nao,nao);
-      C_DSYEV( 'V', 'U', nao, *Fp, nao, eps, *work, nao*nao);    
-		delete[] work;
-		}
-      
+        double** work=init_matrix(nao,nao);
+        C_DSYEV('V', 'U', nao, *Fp, nao, eps, *work, nao*nao);    
+        delete[] work;
+      }
       else{
-      diag(nao, nao, Fp, eps, 1, TMP, 1e-13);
-		}
+        diag(nao, nao, Fp, eps, 1, TMP, 1e-13);
+      }
       
       zero_matrix(C, nao, nao);
       
-      if(do_blas){ //remember to transpose the eigenvectors in TMP
-      C_DGEMM('n','t',nao,nao,nao,1, *X,nao,*Fp,nao,1,*C,nao);
-                }
-      
+      if(do_blas){
+        //remember to transpose the eigenvectors in TMP
+        C_DGEMM('n', 't', nao, nao, nao, 1, *X, nao, *Fp, nao, 1, *C, nao);
+      }
       else{
-      mmult(X, 0, TMP, 0, C, nao, nao, nao);
+        mmult(X, 0, TMP, 0, C, nao, nao, nao);
       }
       zero_matrix(D, nao, nao);
       
+      /* Build new density matrix */
       if(do_blas){
-	
 		// do the contraction to form the density matrix
-		C_DGEMM('n','t',nao,nao,ndocc,1, *C,nao,*C,nao,1,*D,nao);
+		C_DGEMM('n', 't', nao, nao, ndocc, 1, *C, nao, *C, nao, 1, *D, nao);
       }
       
       else{
-      for (int i = 0; i < nao; i++)
-        for (int j = 0; j < nao; j++)
-          for (int k = 0; k < ndocc; k++)
-            D[i][j] += C[i][k] * C[j][k];
-		}
+        for (int i = 0; i < nao; i++)
+          for (int j = 0; j < nao; j++)
+            for (int k = 0; k < ndocc; k++)
+              D[i][j] += C[i][k] * C[j][k];
+      }
       
+      /* Compute new SCF energy */
       escf = 0.0;
       for(int i = 0; i < nao; i++)
         for(int j = 0; j < nao; j++)
           escf += D[i][j] * (H[i][j] + F[i][j]);
 
+      /* Compute RMSD */
       ediff = escf - escf_last;
       rmsd = 0.0;
       for(int i = 0; i < nao; i++)
