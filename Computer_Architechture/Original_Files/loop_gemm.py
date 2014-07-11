@@ -1,10 +1,13 @@
 import subprocess as sp
 
-total_flops = 2E9
+#Target number of flops per run
+total_flops = 5E9
 
 output = []
-for kernal in ['plain','block16','blas']:
-    print '\nStart %s kernal:' % kernal
+for kernal in ['blas']:
+#for kernal in ['plain','block16','blas']:
+    print '\nStarting %s kernal:' % kernal
+
     for k in range(4, 15, 2):
  
         k = 2**k

@@ -7,14 +7,11 @@ LDFLAGS  = -mkl
 #EIGENPATH = /gpfs/software/eigen-eigen-6b38706d90a9
 #CPPFLAGS  = -I$(EIGENPATH) -DHAVE_EIGEN
 
-default:: gemm axpy
-
-axpy:: axpy.o axpy_kernels.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+default:: gemm
 
 gemm:: gemm.o gemm_kernels.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 clean:
-	rm -f *.o gemm axpy
+	rm -f *.o gemm
 
