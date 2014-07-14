@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <vector>
 #include <cassert>
+#include <chrono>
 
 #include "diag.h"
 #include "mmult.h"
@@ -36,6 +37,8 @@ void C_DAXPY(int n, double a, double *x, int incx, double *y, int incy);
 
 int main(int argc, char *argv[]) {
 
+  //Gets start time
+  const auto tstart = std::chrono::system_clock::now();
   try {
     double **X, **F, **Fp, **C, **D, **D_last, *eps;
     double **evecs, *evals, **TMP;
@@ -382,6 +385,13 @@ int main(int argc, char *argv[]) {
     std::cerr << "caught unknown exception\n";
     return 1;
   }
+  //Finds time taken
+  const auto tstop = std::chrono::system_clock::now();
+  const std::chrono::duration<double> time_elapsed = tstop - tstart;
+
+  //Prints timer
+  std::cout << std::endl << "Total time " << time_elapsed.count() << " s" << std::endl;
+  //printf("Total time %d s\n",tstop - tstart); 
 
   return 0;
 }
