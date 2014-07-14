@@ -1,6 +1,7 @@
 ## Daniel G. A. Smith
 ##### University: Auburn University
 ##### Advisor: Konrad Patkowski
+##### Year of Study: 4th
 
 Updated: 7/14/14
 
@@ -10,7 +11,7 @@ Contact: dsmith@auburn.edu
 
 Currently focused on highly accurate descriptions of intermolecular interaction energies between small monomers and carbon nanotubes.
 
-#### Programs Used:
+#### Quantum Chemistry Programs used:
  - MOLPRO
  - PSI4
  - GAMESS
@@ -25,6 +26,13 @@ Currently focused on highly accurate descriptions of intermolecular interaction 
  - NWCHEM
  - PQS
 
+#### Other Notable Programs:
+ - Photoshop
+ - Dreamweaver
+ - DataGraph
+ - PyMol
+ - Papers
+
 ---
 ### Languages
 
@@ -35,10 +43,14 @@ Level: Expert
  - Pandas
  - Scipy
 
+#### Mathematica
+Level: Intermediate
 
 #### C++
 Level: Beginner
 
  - BLAS
  - OpenMP
+
+
 
