@@ -62,8 +62,19 @@ print '..Finished reading in integrals.\n'
 H = T + V
 
 # Orthogonalizer A = S^-1/2
-A = np.matrix(SLA.sqrtm(S)).I
-A = A.real
+# Option 1
+# Use built-in numpy functions
+A = np.matrix(SLA.sqrtm(S)).I.real
+
+# Option 2
+# As coded from the website
+
+# S_evals, S_evecs = SLA.eigh(S)
+# S_evals = np.power(S_evals, -0.5)
+# S_evals = np.diagflat(S_evals)
+# S_evecs = np.matrix(S_evecs)
+# A = S_evecs * S_evals * S_evecs.T
+
 
 # Calculate initial core guess
 # Using the matrix class
@@ -109,13 +120,13 @@ print 'SCF Final Energy %5.10f' % Escf
 print '\nComputing MP2 energy...'
 
 # Split eigenvectors and eigenvalues into o and v
-Co = C[:,:ndocc]
-Cv = C[:,ndocc:]
+Co = C[:, :ndocc]
+Cv = C[:, ndocc:]
 Eocc = e[:ndocc]
 Evirt = e[ndocc:]
 
-# Complete the AOpqrs -> MOiajb step
 
+# Complete the AOpqrs -> MOiajb step
 # "Noddy" N^8 algorithm
 # MO = np.einsum('sB,rJ,qA,pI,pqrs->IAJB', Cv, Co, Cv, Co, I)
 
