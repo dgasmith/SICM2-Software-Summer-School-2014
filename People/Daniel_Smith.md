@@ -1,5 +1,5 @@
-#Daniel G. A. Smith
-###### University: Auburn University
+## Daniel G. A. Smith
+##### University: Auburn University
 ##### Advisor: Konrad Patkowski
 
 Updated: 7/14/14
@@ -25,18 +25,18 @@ Currently focused on highly accurate descriptions of intermolecular interaction 
  - NWCHEM
  - PQS
 
-# Languages
+## Languages
 
-### Python
+#### Python
 Level: Expert
 
--Numpy
--Pandas
--Scipy
+ - Numpy
+ - Pandas
+ - Scipy
 
-### C++
+#### C++
 Level: Beginner
 
--BLAS
--OpenMP
+ - BLAS
+ - OpenMP
 
