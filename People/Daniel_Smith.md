@@ -1,6 +1,6 @@
 #Daniel G. A. Smith
-### University: Auburn University
-### Advisor: Konrad Patkowski
+###### University: Auburn University
+##### Advisor: Konrad Patkowski
 
 Updated: 7/14/14
 
