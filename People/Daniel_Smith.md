@@ -10,20 +10,20 @@ Contact: dsmith@auburn.edu
 
 Currently focused on highly accurate descriptions of intermolecular interaction energies between small monomers and carbon nanotubes.
 
-### Programs Used:
--MOLPRO
--PSI4
--GAMESS
--CFOUR
--MRCC
--VASP
--QCHEM
--SAPT2011
--LUCIA
--DALTON
--LAMPSS
--NWCHEM
--PQS
+#### Programs Used:
+ - MOLPRO
+ - PSI4
+ - GAMESS
+ - CFOUR
+ - MRCC
+ - VASP
+ - QCHEM
+ - SAPT2011
+ - LUCIA
+ - DALTON
+ - LAMPSS
+ - NWCHEM
+ - PQS
 
 # Languages
 
