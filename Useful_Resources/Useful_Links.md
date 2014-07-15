@@ -17,10 +17,10 @@ https://atom.io
 
 ### Crawdad: C/C++ Programming Tutorial
 
-"Dr. Crawford's tutorial website. Covers programming projects from Hartree-Fock all the way to EOM-CCSD. 
+Dr. Crawford's tutorial website. Covers programming projects from Hartree-Fock all the way to EOM-CCSD. 
  
-The website can be found" [here](http://sirius.chem.vt.edu/wiki/doku.php?id=crawdad:programming)
+The website can be found [here](http://sirius.chem.vt.edu/wiki/doku.php?id=crawdad:programming)
 
 ### PSI4
-"Implement your own code, run high accuracy calculations, and try coding tutorials in the Developer's section with" [PSI4](http://psicode.org/)
+Implement your own code, run high accuracy calculations, and try coding tutorials in the Developer's section with [PSI4](http://psicode.org/)
 
