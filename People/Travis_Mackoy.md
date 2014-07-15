@@ -37,8 +37,5 @@ Level: intermediate
 #### Latex
 Level: beginner
 
-#### HTML
-Level: beginner
-
 #### Cascades
 Level: beginner
