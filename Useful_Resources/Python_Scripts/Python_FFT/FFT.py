@@ -1,7 +1,3 @@
-##########################################
-###### THIS SCRIPT IS WRITTEN BY #########
-#### LEELA S DODDA, YALE UNIVERSITY ######
-##########################################
 import matplotlib
 matplotlib.use('Agg') ## TO WRITE PDF'S AND PNGS
 from numpy import fft
