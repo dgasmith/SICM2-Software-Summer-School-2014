@@ -21,7 +21,7 @@ Currently working on implementing local methods in double hybrid DFT and calcula
  - NWCHEM
 
 #### Other Notable Programs:
- - Avagadro
+ - Avogadro
  - VMD
 
 ---
