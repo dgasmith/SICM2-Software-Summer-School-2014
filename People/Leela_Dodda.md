@@ -7,7 +7,7 @@ Updated: 7/15/14
 
 Contact: leela.dodda@yale.edu
 
-Website: quantumchemistryniser.wordpress.com
+Website: https://quantumchemistryniser.wordpress.com/
 
 ---
 ### Research Interest
