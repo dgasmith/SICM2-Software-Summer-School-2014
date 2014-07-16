@@ -7,6 +7,9 @@ Updated: 7/15/14
 
 Contact: leela.dodda@yale.edu
 
+Website: quantumchemistryniser.wordpress.com
+
+---
 ### Research Interest
 
 #### Current Research 
@@ -17,6 +20,7 @@ Monte Carlo Simulations of Organic and Bio-molecular systems, Force field develo
 
 Molecular Reaction Dynamics and Elctronic structure calculations
 
+---
 #### Computational Chemistry Packages used:
  - Gaussian
  - NWChem
