@@ -9,7 +9,6 @@ Contact: leela.dodda@yale.edu
 
 Website: https://quantumchemistryniser.wordpress.com/
 
----
 ### Research Interest
 
 #### Current Research 
@@ -20,7 +19,6 @@ Monte Carlo Simulations of Organic and Bio-molecular systems, Force field develo
 
 Molecular Reaction Dynamics and Elctronic structure calculations
 
----
 #### Computational Chemistry Packages used:
  - Gaussian
  - NWChem
@@ -57,7 +55,7 @@ Level: Expert
 #### R package
 Level: Intermediate
 
-#### Fortran 77 &90 and C++
+#### Fortran 77 & 90 and C++
 Level: Intermediate
 
  - OpenMP
