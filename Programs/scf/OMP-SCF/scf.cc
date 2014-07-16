@@ -19,7 +19,7 @@
 
 // Libint Gaussian integrals library
 #include <libint2.h>
-#include <libint2/cxxapi.h>
+//#include <libint2/cxxapi.h>
 
 #include <omp.h>
 
