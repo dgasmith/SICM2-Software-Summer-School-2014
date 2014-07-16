@@ -26,3 +26,11 @@ LIBINT (version 2) - a library for the evaluation of molecular integrals of many
 
 The libint github can be found [here](https://github.com/evaleev/libint).
 
+## Parallelization
+
+### MPI
+
+The Message Passing Interface Standard (MPI) is a message passing library standard based on the consensus of the MPI Forum, which has over 40 participating organizations, including vendors, researchers, software library developers, and users.
+
+A tutorial can be found [here](https://computing.llnl.gov/tutorials/mpi/).
+
