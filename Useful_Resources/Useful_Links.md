@@ -26,3 +26,8 @@ The website can be found [here](http://sirius.chem.vt.edu/wiki/doku.php?id=crawd
 ### PSI4
 Implement your own code, run high accuracy calculations, and try coding tutorials in the Developer's section with [PSI4](http://psicode.org/)
 
+## GPU Programming
+
+### Cuda
+[Intro to Parallel Programming](https://www.udacity.com/course/cs344) - Using CUDA to Harness the Power of GPUs (Udacity).
+
