@@ -12,113 +12,151 @@
 
 
 // The inner gemm component
-void simple_inner_gemm(double* a, double* b, double* c, size_t n,
+void ikj_simple_gemm(double* a, double* b, double* c, size_t n,
                int starti, int endi,
                int startj, int endj,
                int startk, int endk){
 
-#pragma omp parallel for default(none) shared(a, b, c, n, starti, endi, startj, endj, startk, endk)
-    for (int i=starti; i < endi; i++){
-#pragma unroll_and_jam(8)
+  for (int i=starti; i < endi; i++){
+    for (int k=startk; k < endk; k++){
+      const int in = i * n;
+      const int kn = k * n;
+      const double aik = a[in + k];
+
+#pragma simd
       for (int j=startj; j < endj; j++){
-        const int jn = j*n;
-        double tmp_c = c[i + jn];
-#pragma simd vectorlength(4)
-#pragma unroll_and_jam(8)
-        for (int k=startk; k < endk; k++){
-          tmp_c += a[i + k*n] * b[k + jn];
-        }
-        c[i + jn] = tmp_c;
+        c[in + j] += aik * b[kn + j];
       }
     }
-
+  }
 }
 
-// The unrolled inner gemm component
-// Apparently the intel compiler can do this better than I can with unroll_and_jam
-void unrolled_inner_gemm(double* a, double* b, double* c, size_t n,
+// The inner gemm component
+void kij_simple_gemm(double* a, double* b, double* c, size_t n,
                int starti, int endi,
                int startj, int endj,
                int startk, int endk){
 
-#pragma omp parallel for default(none) shared(a, b, c, n, starti, endi, startj, endj, startk, endk)
+  for (int k=startk; k < endk; k++){
     for (int i=starti; i < endi; i++){
-      for (int j=startj; j < endj; j+=4){
-        const int jn0 = j*n;
-        const int jn1 = jn0 + n;
-        const int jn2 = jn1 + n;
-        const int jn3 = jn2 + n;
+      const int kn = k*n;
+      const int in = i*n;
+      const double aik = a[in + k];
 
-        double tmp_c0 = c[i + jn0];
-        double tmp_c1 = c[i + jn1];
-        double tmp_c2 = c[i + jn2];
-        double tmp_c3 = c[i + jn3];
-
-#pragma simd vectorlength(4)
-        for (int k=startk; k < endk; k+=2){
-          const int aik1 = a[i + k*n];
-          const int aik2 = a[i + k*n + n];
-
-          tmp_c0 += aik1 * b[k + jn0] + aik2 * b[k + jn0 + 1];
-          tmp_c1 += aik1 * b[k + jn1] + aik2 * b[k + jn1 + 1];
-          tmp_c2 += aik1 * b[k + jn2] + aik2 * b[k + jn2 + 1];
-          tmp_c3 += aik1 * b[k + jn3] + aik2 * b[k + jn3 + 1];
-        }
-        c[i + jn0] = tmp_c0;
-        c[i + jn1] = tmp_c1;
-        c[i + jn2] = tmp_c2;
-        c[i + jn3] = tmp_c3;
+#pragma simd
+      for (int j=startj; j < endj; j++){
+        c[in + j] += aik * b[kn + j];
       }
     }
+  }
+}
+
+// The inner gemm component
+void ikj_unroll_gemm(double* a, double* b, double* c, size_t n,
+               int starti, int endi,
+               int startj, int endj,
+               int startk, int endk){
+
+  for (int i=starti; i < endi; i++){
+    for (int k=startk; k < endk; k+=4){
+      const int in = i*n;
+      const int kn0 = k*n;
+      const int kn1 = kn0 + n;
+      const int kn2 = kn1 + n;
+      const int kn3 = kn2 + n;
+
+      const double aik0 = a[in + k];
+      const double aik1 = a[in + k + 1];
+      const double aik2 = a[in + k + 2];
+      const double aik3 = a[in + k + 3];
+
+#pragma simd
+#pragma prefetch c:0:4
+      for (int j=startj; j < endj; j+=4){
+        c[in + j] += aik0 * b[kn0 + j] + aik1 * b[kn1 + j]
+                   + aik2 * b[kn2 + j] + aik3 * b[kn3 + j];
+        c[in + j+1] += aik0 * b[kn0 + j+1] + aik1 * b[kn1 + j+1]
+                    + aik2 * b[kn2 + j+1] + aik3 * b[kn3 + j+1];
+        c[in + j+2] += aik0 * b[kn0 + j+2] + aik1 * b[kn1 + j+2]
+                    + aik2 * b[kn2 + j+2] + aik3 * b[kn3 + j+2];
+        c[in + j+3] += aik0 * b[kn0 + j+3] + aik1 * b[kn1 + j+3]
+                    + aik2 * b[kn2 + j+3] + aik3 * b[kn3 + j+3];
+      }
+    }
+  }
 
 }
 
+
+// The inner gemm component
+void kij_unroll_gemm(double* a, double* b, double* c, size_t n,
+               int starti, int endi,
+               int startj, int endj,
+               int startk, int endk){
+
+  for (int k=startk; k < endk; k++){
+    for (int i=starti; i < endi; i+=4){
+      const int kn = k*n;
+
+      const int in0 = i*n;
+      const int in1 = in0+n;
+      const int in2 = in1+n;
+      const int in3 = in2+n;
+
+      const double aik0 = a[in0 + k];
+      const double aik1 = a[in1 + k];
+      const double aik2 = a[in2 + k];
+      const double aik3 = a[in3 + k];
+
+#pragma simd
+#pragma prefetch c:1:4
+      for (int j=startj; j < endj; j++){
+        const double bkj0 = b[kn + j];
+        c[in0 + j] += aik0 * bkj0;
+        c[in1 + j] += aik1 * bkj0;
+        c[in2 + j] += aik2 * bkj0;
+        c[in3 + j] += aik3 * bkj0;
+      }
+    }
+  }
+
+}
 
 void dgemm_blocked(double* a, double* b, double* c, size_t n, size_t block_size){
 
-  // Compute number of blocks in each direction
-  int tmp_num_blocks;
-  if ((n % block_size) == 0){
-    tmp_num_blocks = n / block_size;
-  }
-  else{
-    tmp_num_blocks = n / block_size + 1;
-  }
-  const int num_blocks = tmp_num_blocks;
-
-  // Compute starting and ending arrays
-  double* start = new double[num_blocks];
-  double* end = new double[num_blocks];
-
-  int block_pos = 0;
-
-// Appears to actually slow down the computation, simply not big enough to matter
-//#pragma omp parallel for default(none) shared(start, end, block_size)
-  for(int i=0; i < num_blocks; i++){
-    start[i] = block_size * i;
-    end[i] = block_size * (i + 1);
-  }
-  
-  end[num_blocks-1] = n;
-
+   const size_t i_block_size = block_size*4;
+   const size_t j_block_size = block_size*16;
+   const size_t k_block_size = block_size;
   // Start for loops
-  for(int i = 0; i < num_blocks; i++){
-    const int starti = start[i];
-    const int endi = end[i];
-    for(int j = 0; j < num_blocks; j++){
-      const int startj = start[j];
-      const int endj = end[j];
-      for(int k = 0; k < num_blocks; k++){
-        const int startk = start[k];
-        const int endk = end[k];
-        simple_inner_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
-        // unrolled_inner_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
+
+#pragma omp parallel for default(none) shared(a, b, c, n, block_size)
+  for(int i = 0; i < n; i+=i_block_size){
+    const size_t starti = i;
+    size_t endi = starti + i_block_size;
+    if (endi>n) endi = n; 
+
+// #pragma omp parallel for default(none) shared(a, b, c, n, block_size, endi, starti)
+    for(int j = 0; j < n; j+=j_block_size){
+      const size_t startj = j;
+      size_t endj = startj + j_block_size;
+      if (endj>n) endj = n; 
+
+      for(int k = 0; k < n; k+=k_block_size){
+        const size_t startk = k;
+        size_t endk = startk + k_block_size;
+        if (endk>n) endk = n; 
+
+        // ikj_simple_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
+        ikj_unroll_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
+
+        // kij_simple_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
+        // kij_unroll_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
+
       }
     }
   }
-  delete[] start;
-  delete[] end; 
 }
+
 
 
 

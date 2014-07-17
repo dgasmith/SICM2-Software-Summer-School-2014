@@ -1,5 +1,6 @@
 CXX      = icpc
-CXXFLAGS = -mkl -std=c++11 -O3 -xHOST -openmp -restrict
+CXXFLAGS = -mkl -std=c++11 -O3 -xHOST -openmp -restrict -vec-report
+# -S -fsource-asm
 CPPFLAGS = -DHAVE_MKL
 LDFLAGS  = -mkl
 
