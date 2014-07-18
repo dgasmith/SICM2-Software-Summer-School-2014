@@ -58,6 +58,7 @@ void ikj_unroll_gemm(double* a, double* b, double* c, size_t n,
                int startk, int endk){
 
   for (int i=starti; i < endi; i++){
+    // Unroll k 4 times
     for (int k=startk; k < endk; k+=4){
       const int in = i*n;
       const int kn0 = k*n;
@@ -70,17 +71,18 @@ void ikj_unroll_gemm(double* a, double* b, double* c, size_t n,
       const double aik2 = a[in + k + 2];
       const double aik3 = a[in + k + 3];
 
+      // Unroll j 4 times
 #pragma simd
 #pragma prefetch c:0:4
       for (int j=startj; j < endj; j+=4){
         c[in + j] += aik0 * b[kn0 + j] + aik1 * b[kn1 + j]
                    + aik2 * b[kn2 + j] + aik3 * b[kn3 + j];
         c[in + j+1] += aik0 * b[kn0 + j+1] + aik1 * b[kn1 + j+1]
-                    + aik2 * b[kn2 + j+1] + aik3 * b[kn3 + j+1];
+                     + aik2 * b[kn2 + j+1] + aik3 * b[kn3 + j+1];
         c[in + j+2] += aik0 * b[kn0 + j+2] + aik1 * b[kn1 + j+2]
-                    + aik2 * b[kn2 + j+2] + aik3 * b[kn3 + j+2];
+                     + aik2 * b[kn2 + j+2] + aik3 * b[kn3 + j+2];
         c[in + j+3] += aik0 * b[kn0 + j+3] + aik1 * b[kn1 + j+3]
-                    + aik2 * b[kn2 + j+3] + aik3 * b[kn3 + j+3];
+                     + aik2 * b[kn2 + j+3] + aik3 * b[kn3 + j+3];
       }
     }
   }
@@ -95,6 +97,7 @@ void kij_unroll_gemm(double* a, double* b, double* c, size_t n,
                int startk, int endk){
 
   for (int k=startk; k < endk; k++){
+    // Unroll i 4 times
     for (int i=starti; i < endi; i+=4){
       const int kn = k*n;
 
@@ -109,7 +112,7 @@ void kij_unroll_gemm(double* a, double* b, double* c, size_t n,
       const double aik3 = a[in3 + k];
 
 #pragma simd
-#pragma prefetch c:1:4
+#pragma prefetch c:0:4
       for (int j=startj; j < endj; j++){
         const double bkj0 = b[kn + j];
         c[in0 + j] += aik0 * bkj0;
@@ -123,12 +126,18 @@ void kij_unroll_gemm(double* a, double* b, double* c, size_t n,
 }
 
 void dgemm_blocked(double* a, double* b, double* c, size_t n, size_t block_size){
+// Blocked DGEMM c[i][j] = A[i][k] * B[k][j] of square matrices
+// n = matrix dimension, block_size = size of the blocks(!)
 
-   const size_t i_block_size = block_size*4;
-   const size_t j_block_size = block_size*16;
-   const size_t k_block_size = block_size;
-  // Start for loops
+// Modify block shape here  
+// Block size should be a multiple of of the unrolled loop size
+// This is typically 4 for AVX machines or 8 for AVX2 machines
+  const size_t i_block_size = block_size*4;
+  const size_t j_block_size = block_size*16;
+  const size_t k_block_size = block_size;
 
+// Start for loops
+// Can parallelize i or j without race conditions, but not k
 #pragma omp parallel for default(none) shared(a, b, c, n, block_size)
   for(int i = 0; i < n; i+=i_block_size){
     const size_t starti = i;
@@ -145,6 +154,9 @@ void dgemm_blocked(double* a, double* b, double* c, size_t n, size_t block_size)
         const size_t startk = k;
         size_t endk = startk + k_block_size;
         if (endk>n) endk = n; 
+
+// ijk refers to the order of the loops
+// simple and unroll refers to the loop types
 
         // ikj_simple_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
         ikj_unroll_gemm(a, b, c, n, starti, endi, startj, endj, startk, endk);
