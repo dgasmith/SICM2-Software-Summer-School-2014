@@ -1,5 +1,8 @@
 #General Useful links
 
+## SICM2 Main Lecturer Repo
+[Materials used by Lecturers at SICM2](https://github.com/lothian/S2I2)
+
 ## Code IDE's
 
 ### Sublime Text
@@ -31,3 +34,5 @@ Implement your own code, run high accuracy calculations, and try coding tutorial
 ### Cuda
 [Intro to Parallel Programming](https://www.udacity.com/course/cs344) - Using CUDA to Harness the Power of GPUs (Udacity).
 
+### Dave Stampf's Repo
+[GPU Materials from SICM2 Lecture] (https://github.com/davestampf/GPUTalk2014)
