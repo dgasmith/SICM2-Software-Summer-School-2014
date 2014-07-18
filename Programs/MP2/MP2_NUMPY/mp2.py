@@ -112,7 +112,7 @@ for iteration in range(1, maxiteration + 1):
     Fp = A * F * A
     e, C2 = SLA.eigh(Fp)
     C = A * C2
-    D  = C[:,:ndocc] * C[:,:ndocc].T
+    D  = C[:, :ndocc] * C[:, :ndocc].T
 
 
 print 'SCF Final Energy %5.10f' % Escf
