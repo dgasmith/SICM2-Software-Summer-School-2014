@@ -9,6 +9,6 @@ Other algorithms are present in the code and can be called by simply managing th
 in the inner loop of the `blocked_gemm` routine in `Kernals/blocked_gemm.cc`. 
 
 
-#### loop_gemm.py
+#### `loop_gemm.py`
 Provides an easy to use python interface for timing the gemm program. 
 
