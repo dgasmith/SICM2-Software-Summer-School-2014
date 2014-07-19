@@ -1,5 +1,5 @@
-EIGENPATH = /gpfs/software/eigen-eigen-6b38706d90a9
-LIBINT2PATH = /home/guest40/software/libint/2.1.0-beta
+EIGENPATH = /Users/adrianmo/Documents/OSULocal/Research/code/SICM2-Software-Summer-School-2014/
+LIBINT2PATH = /Users/adrianmo/Documents/OSULocal/Research/code/SICM2-Software-Summer-School-2014/libint-2.0.3
 LIBINT2INCLUDES = -I$(LIBINT2PATH)/include -I$(LIBINT2PATH)/include/libint2
 
 CXX = g++
