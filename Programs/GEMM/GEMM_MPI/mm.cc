@@ -22,7 +22,7 @@ double* a, int lda, double* b, int ldb, double beta, double* c, int ldc);
 int main(int argc, char *argv[])
 {
   if(argc != 3) {
-    printf("Matrix rank followed by either plain, omp", or mkl required as arguments.\n");
+    printf("Matrix rank followed by either plain, omp, or mkl required as arguments.\n");
     return 1;
   }
      
