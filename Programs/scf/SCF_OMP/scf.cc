@@ -19,7 +19,7 @@
 
 // Libint Gaussian integrals library
 #include <libint2.h>
-#include <libint2/cxxapi.h>
+//#include <libint2/cxxapi.h>
 
 #include <omp.h>
 
@@ -51,9 +51,6 @@ Matrix compute_2body_fock(const std::vector<libint2::Shell>& shells,
 
 int main(int argc, char *argv[]) {
 printf("\n OMP SCF code utilizing %d threads \n",omp_get_num_threads()); 
-
-
-
 
   using std::cout;
   using std::cerr;

@@ -77,7 +77,7 @@ void check_method(double* a, double* b, double* c, size_t n){
 
   dgemm_blas(a, b, bench, n);
   double reldiff = matrix_difference(n, c, bench);
-  std::cout << "The relative difference between the current kernel and C_DGEMM is " << reldiff << "%\n";
+  std::cout << "The relative difference between the current kernel and C_DGEMM is " << reldiff << std::endl;
 
   delete[] bench;
 } 
@@ -116,8 +116,17 @@ double profile_dgemm(size_t n,
   }
 #endif
   else if (kernel.find("block") != std::string::npos) {
+
     std::stringstream ss; ss << std::string(kernel.begin()+5, kernel.end());
     size_t blocksize; ss >> blocksize;
+
+    // This check depends on the unroll size in the Kernals/blocked_gemm.cc program.
+    // Should be changed if unroll length is changed.
+    if (blocksize%4 !=0) {
+      std::cout << "The blocksize should be a multiple of 4." << std::endl; 
+      return 1;
+    }
+
     for (int i=0; i<nrepeats; i++){
       dgemm_blocked(a, b, c, n, blocksize);
     }

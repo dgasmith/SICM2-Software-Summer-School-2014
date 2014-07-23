@@ -2,7 +2,7 @@
 # Author: Daniel Smith
 # Date: 7/14/14
 # Extremely simple numpy example of j,k unrolled dgemm code
-# Will by slower than pure numpy, but this is much easier to see
+# Will by slower than pure numpy, but this is much easier to see the unrolling
 #
 
 import numpy as np
